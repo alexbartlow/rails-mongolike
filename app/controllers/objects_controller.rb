@@ -1,4 +1,10 @@
 class ObjectsController < ApplicationController
+  respond_to :json
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+  def not_found
+    render json: {error: "not_found"}, status: :not_found
+  end
+
   def index
     render json: Hash[ObjectLink.limit(50).all.map{|ol|
       [ol.id, ol.payload]
