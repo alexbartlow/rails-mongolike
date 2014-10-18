@@ -1,4 +1,4 @@
-== README
+## README
 
 This is a simple app that exposes a key/value store with a couple interesting features:
 
@@ -23,7 +23,7 @@ a rails API fronting a rich front-end.
 To see the controller signatures, the best reference is `test/controllers/objects_controller_test.rb`
 
 
-=== Todo:
+### Todo:
 
 * Write some triggers to "render" the dbobjects table into other database tables.
 * On those extracted models, override `update_attributes` to use `ObjectLink#update`
