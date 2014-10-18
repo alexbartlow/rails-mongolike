@@ -3,15 +3,15 @@
 This is a simple app that exposes a key/value store with a couple interesting features:
 
 * Every object is exposed under the `/objects/:id` route, where ID can be
-something like `users/one`. You can change the `objects` to something like
-`api` in `config/routes.rb`
+  something like `users/one`. You can change the `objects` to something like
+  `api` in `config/routes.rb`
 
 * Conditional Updates: When doing an update or delete, you are required
-to pass the old uuid for the object as the `:old_id` parameter.
+  to pass the old uuid for the object as the `:old_id` parameter.
 
 * Because it's backed by Postgres' JSON, you're able to extract your models
-into separate tables. I'm going to add something to make this process easy
-and update those extra tables with database triggers.
+  into separate tables. I'm going to add something to make this process easy
+  and update those extra tables with database triggers.
 
 Overall, this should be a much better alternative to mongo when bootstrapping
 a rails API fronting a rich front-end.
