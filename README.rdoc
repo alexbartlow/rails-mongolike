@@ -1,28 +1,19 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a simple app that exposes a key/value store with a couple interesting features:
 
-Things you may want to cover:
+* Every object is exposed under the `/objects/:id` route, where ID can be
+something like `users/one`. You can change the `objects` to something like
+`api` in `config/routes.rb`
 
-* Ruby version
+* Conditional Updates: When doing an update or delete, you are required
+to pass the old uuid for the object as the `:old_id` parameter.
 
-* System dependencies
+* Because it's backed by Postgres' JSON, you're able to extract your models
+into separate tables. I'm going to add something to make this process easy
+and update those extra tables with database triggers.
 
-* Configuration
+Overall, this should be a much better alternative to mongo when bootstrapping
+a rails API fronting a rich front-end.
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+To see the controller signatures, the best reference is `test/controllers/objects_controller_test.rb`
