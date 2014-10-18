@@ -2,10 +2,13 @@ require 'test_helper'
 
 class ObjectsControllerTest < ActionController::TestCase
   setup do
-    ObjectLink.delete_all
-    DbObject.delete_all
-    @object = DbObject.create(payload: {name: "User One"})
-    @one = ObjectLink.create(name: "users/one", db_object_id: @object.id)
+    @one = ObjectLink.new_object("users/one", SecureRandom.uuid, {fullName: "User One"})
+    @object = @one.db_object
+  end
+
+  test "get index" do
+    get :index
+    assert_equal response.body, [@one.payload].to_json
   end
 
   test "get object" do
@@ -19,7 +22,7 @@ class ObjectsControllerTest < ActionController::TestCase
       payload: {
         name: "User Two"
       },
-      name: "users/two",
+      id: "users/two",
       uuid: SecureRandom.uuid
     }
     assert response.success?
@@ -28,16 +31,19 @@ class ObjectsControllerTest < ActionController::TestCase
   end
 
   test "put object with old id" do
+    new_id = SecureRandom.uuid
     put :update, {
       payload: {
-        name: "New User One"
+        fullName: "New User One"
       },
       id: "users/one",
-      old_id: @object.id
+      old_id: @object.id,
+      uuid: new_id
     }
 
     assert response.success?
-    assert_equal ObjectLink.find("users/one").payload["name"], "New User One"
+    assert_equal ObjectLink.find("users/one").payload["fullName"], "New User One"
+    assert_equal ObjectLink.find("users/one").payload["id"], new_id
   end
 
   test "put object with wrong id" do
@@ -52,8 +58,9 @@ class ObjectsControllerTest < ActionController::TestCase
   end
 
   test "delete" do
-    delete :destroy, id: "users/one"
-
-    assert_nil ObjectLink.find_by_name("users/one")
+    delete :destroy, id: "users/one", old_id: @object.id
+    ole = ObjectLink.find_by_name("users/one").payload
+    assert_nil ole["fullName"]
+    assert_equal true, ole["_deleted"]
   end
 end
