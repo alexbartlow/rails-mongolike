@@ -1,9 +1,6 @@
 class ObjectsController < ApplicationController
   respond_to :json
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
-  def not_found
-    render json: {error: "not_found"}, status: :not_found
-  end
 
   def index
     render json: ObjectLink.limit(50).map(&:payload)
@@ -24,7 +21,7 @@ class ObjectsController < ApplicationController
       @object.update(params[:payload], params[:uuid])
       render_object
     else
-      render json: {error: "locked"}, status: :locked
+      render_locked
     end
   end
 
@@ -34,13 +31,21 @@ class ObjectsController < ApplicationController
       @object.update({_deleted: true})
       render_object status: 204
     else
-      render json: {error: "locked"}, status: :locked
+      render_locked
     end
   end
 
   private
   def render_object(opts = {})
     render(opts.merge(json: @object.payload))
+  end
+
+  def not_found
+    render json: {error: "not_found"}, status: :not_found
+  end
+
+  def render_locked
+    render json: {error: "locked"}, status: :locked
   end
  
   def object_conditional_fetch
